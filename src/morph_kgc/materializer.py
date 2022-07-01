@@ -211,7 +211,7 @@ def _materialize_join_mapping_rule_terms(results_df, mapping_rule, parent_triple
         elif pd.notna(mapping_rule['graph_reference']):
             results_df = _materialize_reference(results_df, mapping_rule['graph_reference'], config, termtype=R2RML_IRI, columns_alias='child_')
 
-    return set(results_df['triple'])
+    return set(results_df['triple'].to_arrow().to_pylist())
 
 
 def _materialize_mapping_rule_terms(results_df, mapping_rule, config):
@@ -266,10 +266,16 @@ def _materialize_mapping_rule(mapping_rule, subject_maps_df, config):
         references, parent_references = _add_references_in_join_condition(mapping_rule, references, parent_references)
 
         data = _get_data(config, mapping_rule, references)
-        data = data.add_prefix('child_')
+        cols = {}
+        for col in data.columns:
+            cols[col] = 'child_' + str(col)
+        data = data.rename(columns=cols)
 
         parent_data = _get_data(config, parent_triples_map_rule, parent_references)
-        parent_data = parent_data.add_prefix('parent_')
+        cols = {}
+        for col in parent_data.columns:
+            cols[col] = 'parent_' + str(col)
+        parent_data = parent_data.rename(columns=cols)
         merged_data = _merge_data(data, parent_data, mapping_rule)
 
         triples = _materialize_join_mapping_rule_terms(merged_data, mapping_rule, parent_triples_map_rule, config)
