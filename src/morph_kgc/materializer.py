@@ -132,7 +132,7 @@ def _materialize_template(results_df, template, config, columns_alias='', termty
         if pd.notna(language_tag):
             results_df['triple'] = results_df['triple'] + '@' + language_tag + ' '
         elif pd.notna(datatype):
-            results_df['triple'] = results_df['triple'] + '^^<' + datatype + '> '
+            results_df['triple'] = results_df['triple'] + '^^<' + str(datatype) + '> '
         else:
             results_df['triple'] = results_df['triple'] + ' '
     elif str(termtype).strip() == R2RML_BLANK_NODE:
@@ -151,7 +151,7 @@ def _materialize_reference(results_df, reference, config, columns_alias='', term
         if pd.notna(language_tag):
             results_df['triple'] = results_df['triple'] + '@' + language_tag + ' '
         elif pd.notna(datatype):
-            results_df['triple'] = results_df['triple'] + '^^<' + datatype + '> '
+            results_df['triple'] = results_df['triple'] + '^^<' + str(datatype) + '> '
         else:
             results_df['triple'] = results_df['triple'] + ' '
     elif str(termtype).strip() == R2RML_IRI:
@@ -172,7 +172,7 @@ def _materialize_constant(results_df, constant, termtype=R2RML_IRI, language_tag
         if pd.notna(language_tag):
             complete_constant = complete_constant + '@' + language_tag + ' '
         elif pd.notna(datatype):
-            complete_constant = complete_constant + '^^<' + datatype + '> '
+            complete_constant = complete_constant + '^^<' + str(datatype) + '> '
         else:
             complete_constant = complete_constant + ' '
     elif str(termtype).strip() == R2RML_BLANK_NODE:
