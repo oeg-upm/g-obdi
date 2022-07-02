@@ -24,14 +24,6 @@ with open(os.path.join(os.path.dirname(__file__), 'src', 'morph_kgc', '_version.
     version = (re.compile(r""".*__version__ = ["'](.*?)['"]""", re.S).match(file.read()).group(1))
 
 
-with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r', encoding='utf-8') as file:
-    readme = file.read()
-    # remove morph logo
-    readme = re.sub("<p[^>]*>", "", readme)
-    readme = re.sub("<img[^>]*>", "", readme)
-    readme = re.sub("</?p[^>]*>", "", readme)
-
-
 with open(os.path.join(os.path.dirname(__file__), 'requirements.txt')) as file:
     requirements = [line.strip().replace(' ', '') for line in file.readlines()]
 
@@ -45,7 +37,6 @@ setup(
     description='Scalable [R2]RML engine to create RDF knowledge graphs from heterogeneous data sources.',
     keywords='Morph-KGC, RDF, R2RML, RML, Knowledge Graphs, Data Integration'
     ,
-    long_description=readme,
     long_description_content_type='text/markdown',
     url='https://github.com/oeg-upm/morph-kgc',
     project_urls={
