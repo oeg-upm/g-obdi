@@ -47,9 +47,7 @@ def _preprocess_data(data, mapping_rule, references, config):
         if config.get_database_url(mapping_rule['source_name']).lower().startswith(ORACLE.lower()):
             data = normalize_oracle_identifier_casing(data, references)
 
-    # remove NULLS for those data formats that do not allow to remove them at reading time
-    if config.apply_na_filter():
-        data = remove_null_values_from_dataframe(data, config)
+    data = remove_null_values_from_dataframe(data, config)
 
     if mapping_rule['source_type'] == RDB:
         # deal with integers
