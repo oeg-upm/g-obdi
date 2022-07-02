@@ -13,8 +13,6 @@ import sql_metadata
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
-import cudf
-
 from ..constants import *
 
 
@@ -179,7 +177,7 @@ def get_sql_data(config, mapping_rule, references):
 
     logging.debug(f"SQL query for mapping rule `{mapping_rule['id']}`: [{sql_query}]")
 
-    return cudf.from_pandas(pd.read_sql(sql_query, con=db_connection, coerce_float=False))
+    return pd.read_sql(sql_query, con=db_connection, coerce_float=False)
 
 
 def setup_oracle(config):

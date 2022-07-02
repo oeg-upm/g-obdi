@@ -11,7 +11,6 @@ import pandas as pd
 import numpy as np
 import elementpath
 import xml.etree.ElementTree as ET
-import cudf
 
 from jsonpath import JSONPath
 
@@ -52,7 +51,7 @@ def get_file_data(mapping_rule, references):
 def _read_csv(mapping_rule, references, file_source_type):
     delimiter = ',' if file_source_type == 'CSV' else '\t'
 
-    cdf = cudf.read_csv(str(mapping_rule['data_source']),
+    return pd.read_csv(str(mapping_rule['data_source']),
                          delimiter=delimiter,
                          index_col=False,
                          usecols=references,
@@ -64,19 +63,19 @@ def _read_csv(mapping_rule, references, file_source_type):
 
 
 def _read_parquet(mapping_rule, references):
-    return cudf.read_parquet(str(mapping_rule['data_source']), columns=references)
+    return pd.read_parquet(str(mapping_rule['data_source']), columns=references)
 
 
 def _read_feather(mapping_rule, references):
-    return cudf.read_feather(str(mapping_rule['data_source']), columns=references)
+    return pd.read_feather(str(mapping_rule['data_source']), columns=references)
 
 
 def _read_orc(mapping_rule, references):
-    return cudf.read_orc(str(mapping_rule['data_source']), columns=references)
+    return pd.read_orc(str(mapping_rule['data_source']), columns=references)
 
 
 def _read_stata(mapping_rule, references):
-    cdf = pd.read_stata(str(mapping_rule['data_source']),
+    return pd.read_stata(str(mapping_rule['data_source']),
                          columns=references,
                          convert_dates=False,
                          convert_categoricals=False,
@@ -84,23 +83,17 @@ def _read_stata(mapping_rule, references):
                          preserve_dtypes=False,
                          order_categoricals=False)
 
-    return cudf.from_pandas(cdf)
-
 
 def _read_sas(mapping_rule, references):
-    cdf = pd.read_sas(str(mapping_rule['data_source']), encoding='utf-8')
-
-    return cudf.from_pandas(cdf)
+    return pd.read_sas(str(mapping_rule['data_source']), encoding='utf-8')
 
 
 def _read_spss(mapping_rule, references):
-    cdf = pd.read_spss(str(mapping_rule['data_source']), usecols=references, convert_categoricals=False)
-
-    return cudf.from_pandas(cdf)
+    return pd.read_spss(str(mapping_rule['data_source']), usecols=references, convert_categoricals=False)
 
 
 def _read_excel(mapping_rule, references):
-    cdf = pd.read_excel(str(mapping_rule['data_source']),
+    return pd.read_excel(str(mapping_rule['data_source']),
                          sheet_name=0,
                          engine='openpyxl',
                          usecols=references,
@@ -108,19 +101,15 @@ def _read_excel(mapping_rule, references):
                          keep_default_na=False,
                          na_filter=False)
 
-    return cudf.from_pandas(cdf)
-
 
 def _read_ods(mapping_rule, references):
-    cdf = pd.read_excel(str(mapping_rule['data_source']),
+    return pd.read_excel(str(mapping_rule['data_source']),
                          sheet_name=0,
                          engine='odf',
                          usecols=references,
                          dtype=str,
                          keep_default_na=False,
                          na_filter=False)
-
-    return cudf.from_pandas(cdf)
 
 
 def _read_json(mapping_rule, references):
@@ -141,7 +130,7 @@ def _read_json(mapping_rule, references):
     missing_references_in_df = list(set(references).difference(set(json_df.columns)))
     json_df[missing_references_in_df] = np.nan
 
-    return cudf.from_pandas(json_df)
+    return json_df
 
 
 def _read_xml(mapping_rule, references):
@@ -166,4 +155,4 @@ def _read_xml(mapping_rule, references):
     for reference in references:
         xml_df = xml_df.explode(reference)
 
-    return cudf.from_pandas(xml_df)
+    return xml_df

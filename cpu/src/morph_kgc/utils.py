@@ -15,8 +15,6 @@ import time
 import numpy as np
 import pandas as pd
 
-import cudf
-
 from itertools import product
 from .constants import AUXILIAR_UNIQUE_REPLACING_STRING
 
@@ -248,7 +246,7 @@ def remove_null_values_from_dataframe(dataframe, config):
     # data to str to be able to perform string replacement
     dataframe = dataframe.astype(str)
 
-    dataframe.replace(config.get_na_values(), cudf.NA, inplace=True)
+    dataframe.replace(config.get_na_values(), np.NaN, inplace=True)
     dataframe.dropna(axis=0, how='any', inplace=True)
 
     return dataframe
